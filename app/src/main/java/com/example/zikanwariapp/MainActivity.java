@@ -14,7 +14,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 public class MainActivity extends AppCompatActivity {
-
+//まいとだよ
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.i("Zikanwari App","Main onCreate() called.");
