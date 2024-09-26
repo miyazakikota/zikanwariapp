@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">時間割管理アプリ</string>
+    <string name="tv_lecture">講義名を入力</string>
+    <string name="tv_place">教室を入力</string>
+    <string name="tv_notice">出席通知</string>
+    <string name="bt_save">保存</string>
+    <string name="bt_delete">削除</string>
+    <string name="bt_one">登録</string>
+
+</resources>
