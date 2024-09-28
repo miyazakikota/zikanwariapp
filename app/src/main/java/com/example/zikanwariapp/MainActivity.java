@@ -13,8 +13,13 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-public class MainActivity extends AppCompatActivity {
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.os.SystemClock;
 
+public class MainActivity extends AppCompatActivity {
+//まいとだよ２
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.i("Zikanwari App","Main onCreate() called.");
@@ -31,6 +36,14 @@ public class MainActivity extends AppCompatActivity {
         DataBaseOperator operator = new DataBaseOperator(MainActivity.this);
         operator.setAllButton(MainActivity.this,new OnButtonClick(),llJugyo);
 //---------------------------------------------------------------------------------------
+
+//        //----------アラーム機能の追加------------------//
+        AlarmManager alarmManager = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(context, AlarmManagerfetch.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
+
+        alarmManager.setRepeating(AlarmManager.ELAPSED_REALTIME, 3000, AlarmManager.INTERVAL_DAY*7, pendingIntent);
+//        //-------------------------------------------//
     }
     
     @Override
@@ -75,5 +88,16 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 //-----------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------------
+// BoardcastReceiverを継承
+public class AlarmManagerfetch extends BroadcastReceiver {
+
+    @Override
+    public void onReceive(Context context, Intent intent) {
+        // 作りたい処理を書く
+    }
+}
+//-------------------------------------------------------------------------------
 
 }
