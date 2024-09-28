@@ -1,5 +1,8 @@
 package com.example.zikanwariapp;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -12,6 +15,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+
+import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity {
 //まいとだよ２
@@ -31,6 +36,8 @@ public class MainActivity extends AppCompatActivity {
         DataBaseOperator operator = new DataBaseOperator(MainActivity.this);
         operator.setAllButton(MainActivity.this,new OnButtonClick(),llJugyo);
 //---------------------------------------------------------------------------------------
+        startAlarm();
+        Log.i("test","mainactivity started.");
     }
     
     @Override
@@ -76,4 +83,22 @@ public class MainActivity extends AppCompatActivity {
     }
 //-----------------------------------------------------------------------------
 
+
+    public void startAlarm(){
+        AlarmManager alarmMgr = (AlarmManager)getApplicationContext().getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(getApplicationContext(), AlarmReceiver.class);
+        
+        PendingIntent alarmIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, intent, PendingIntent.FLAG_IMMUTABLE);
+
+// Set the alarm to start at 8:30 a.m.
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(System.currentTimeMillis());
+        calendar.set(Calendar.HOUR_OF_DAY, 7);
+        calendar.set(Calendar.MINUTE, 29);
+
+// setRepeating() lets you specify a precise custom interval--in this case,
+        int interval = 1000;
+        alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
+                1000, alarmIntent);
+    }
 }
