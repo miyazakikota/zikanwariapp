@@ -1,6 +1,10 @@
 package com.example.zikanwariapp;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -9,14 +13,17 @@ import android.widget.LinearLayout;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import android.app.AlarmManager;
-import android.app.PendingIntent;
-import android.content.Context;
-import android.os.SystemClock;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+
+
+import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity {
 //まいとだよ２
@@ -37,13 +44,24 @@ public class MainActivity extends AppCompatActivity {
         operator.setAllButton(MainActivity.this,new OnButtonClick(),llJugyo);
 //---------------------------------------------------------------------------------------
 
-//        //----------アラーム機能の追加------------------//
-        AlarmManager alarmManager = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
-        Intent intent = new Intent(context, AlarmManagerfetch.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
+        startAlarm();
+        Log.i("test","mainactivity started.");
 
-        alarmManager.setRepeating(AlarmManager.ELAPSED_REALTIME, 3000, AlarmManager.INTERVAL_DAY*7, pendingIntent);
-//        //-------------------------------------------//
+        //-----通知機能の追加---------------------//
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {        // ・・・(1)
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+
+            NotificationChannel channel                              // ・・・(2)
+                    = new NotificationChannel("CHANNEL_ID", "サンプルアプリ", importance);
+
+            channel.setDescription("説明・説明 ここに通知の説明を書くことができます");
+
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
+
+        //いつ処理するか
+        //--------------------------------------//
     }
     
     @Override
@@ -89,15 +107,26 @@ public class MainActivity extends AppCompatActivity {
     }
 //-----------------------------------------------------------------------------
 
-//-------------------------------------------------------------------------------
-// BoardcastReceiverを継承
-public class AlarmManagerfetch extends BroadcastReceiver {
 
-    @Override
-    public void onReceive(Context context, Intent intent) {
-        // 作りたい処理を書く
+
+
+
+    public void startAlarm(){
+        AlarmManager alarmMgr = (AlarmManager)getApplicationContext().getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(getApplicationContext(), AlarmReceiver.class);
+        
+        PendingIntent alarmIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, intent, PendingIntent.FLAG_IMMUTABLE);
+
+// Set the alarm to start at 8:30 a.m.
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(System.currentTimeMillis());
+        calendar.set(Calendar.HOUR_OF_DAY, 7);
+        calendar.set(Calendar.MINUTE, 29);
+
+// setRepeating() lets you specify a precise custom interval--in this case,
+        int interval = 1000;
+        alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
+                1000, alarmIntent);
     }
-}
-//-------------------------------------------------------------------------------
 
 }
