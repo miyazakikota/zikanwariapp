@@ -1,9 +1,13 @@
 package com.example.zikanwariapp;
 
 import android.app.AlarmManager;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -12,6 +16,9 @@ import android.widget.LinearLayout;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -20,6 +27,8 @@ import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity {
 //まいとだよ２
+    private AlarmManager alarmMgr;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.i("Zikanwari App","Main onCreate() called.");
@@ -36,7 +45,19 @@ public class MainActivity extends AppCompatActivity {
         DataBaseOperator operator = new DataBaseOperator(MainActivity.this);
         operator.setAllButton(MainActivity.this,new OnButtonClick(),llJugyo);
 //---------------------------------------------------------------------------------------
-        startAlarm();
+        alarmMgr = (AlarmManager)getApplicationContext().getSystemService(Context.ALARM_SERVICE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+            alarmMgr.cancelAll();
+        }
+        for(int i = 1;i <= 25;i++){
+            String[] data = operator.getDataById(i);
+            int notification = Integer.parseInt(data[2]);
+//            通知ONだったら
+            if(notification == 0){
+                startAlarm(i,11,2);
+            }
+        }
+
         Log.i("test","mainactivity started.");
     }
     
@@ -84,21 +105,26 @@ public class MainActivity extends AppCompatActivity {
 //-----------------------------------------------------------------------------
 
 
-    public void startAlarm(){
-        AlarmManager alarmMgr = (AlarmManager)getApplicationContext().getSystemService(Context.ALARM_SERVICE);
+    public void startAlarm(int id,int hour,int minute){
         Intent intent = new Intent(getApplicationContext(), AlarmReceiver.class);
-        
-        PendingIntent alarmIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, intent, PendingIntent.FLAG_IMMUTABLE);
+        intent.putExtra("id",id);
+        PendingIntent alarmIntent = PendingIntent.getBroadcast(getApplicationContext(), id, intent, PendingIntent.FLAG_IMMUTABLE);
 
 // Set the alarm to start at 8:30 a.m.
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
-        calendar.set(Calendar.HOUR_OF_DAY, 7);
-        calendar.set(Calendar.MINUTE, 29);
+        int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
+        calendar.set(Calendar.HOUR_OF_DAY, hour);
+        calendar.set(Calendar.MINUTE, minute);
 
 // setRepeating() lets you specify a precise custom interval--in this case,
         int interval = 1000;
         alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
-                1000, alarmIntent);
+                1000*60, alarmIntent);
+
+
     }
+
+
+
 }
