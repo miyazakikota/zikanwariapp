@@ -33,9 +33,14 @@ public class AlarmReceiver extends BroadcastReceiver {
     //---------------------------------------------------------------------------------
     @Override
     public void onReceive(Context context, Intent intent) {
-        // 作りたい処理を書く
-        Log.i("test","receiver move");
-        Log.i("test","context is "+context);
+
+        // idの取得
+        int id = intent.getIntExtra("id",0);
+        if(id == 0) {
+            Log.e("test","idを受け取れませんでした");
+            return;
+        }
+        Log.i("test","receiver "+String.valueOf(id)+" move");
 
         notifyTest(context);
 
