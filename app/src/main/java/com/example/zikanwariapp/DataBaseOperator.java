@@ -1,10 +1,13 @@
 package com.example.zikanwariapp;
 
+import static androidx.appcompat.content.res.AppCompatResources.getDrawable;
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
+import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -35,6 +38,7 @@ public class DataBaseOperator {
 
 
 
+//  String型の配列　{name,room,notification}　を返す
     public String[] getDataById(int id){
 
         DataBaseHelper helper = new DataBaseHelper(context);
@@ -93,18 +97,19 @@ public class DataBaseOperator {
             int notification = cursor.getInt(notificationIdx);
 
             if(name.length() > 6) name = name.substring(0,5)+"…";
+            if(room.length() > 6) room = room.substring(0,5)+"…";
             String showText=name+"\n \n"+room+"\n";
             Button bt = new Button(activity);
             bt.setTag(Integer.toString(id));
             bt.setText(showText);
+            bt.setBackground(context.getDrawable(R.drawable.my_button));
             bt.setOnClickListener(listener);
             Log.d("check_showText",showText);
-//            float scale = activity.getResources().getDisplayMetrics().density;
-//            int margin = (int)(scale*1);
+            float scale = activity.getResources().getDisplayMetrics().density;
 
             LinearLayout.LayoutParams btParams = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT);
-//            btParams.setMargins(margin,margin,margin,margin);
             btParams.weight = 1;
+
             bt.setLayoutParams(btParams);
 
             //llJugyoの1+(i+5)/5番目のLinearLayoutにボタンを追加
