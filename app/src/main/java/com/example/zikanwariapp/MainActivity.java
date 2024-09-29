@@ -32,9 +32,10 @@ import android.app.NotificationManager;
 
 import java.util.Calendar;
 
+
 public class MainActivity extends AppCompatActivity {
-//まいとだよ２
     private AlarmManager alarmMgr;
+    private final int[][] TIME_FOR_NOTIFICATION = {{8,45},{10,25},{12,55},{14,35},{16,15}};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,24 +48,13 @@ public class MainActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-        //-------------追加---------------------------------------------------------------------
+//        ボタンの追加
         LinearLayout llJugyo = findViewById(R.id.ll_jugyo);
         DataBaseOperator operator = new DataBaseOperator(MainActivity.this);
         operator.setAllButton(MainActivity.this,new OnButtonClick(),llJugyo);
-//---------------------------------------------------------------------------------------
-        alarmMgr = (AlarmManager)getApplicationContext().getSystemService(Context.ALARM_SERVICE);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-            alarmMgr.cancelAll();
-        }
-        for(int i = 1;i <= 25;i++){
-            String[] data = operator.getDataById(i);
-            int notification = Integer.parseInt(data[2]);
-//            通知ONだったら
-            if(notification == 0){
-                startAlarm(i,11,2);
-            }
-        }
 
+//        通知の設定
+        setAlarm(operator);
         Log.i("test","mainactivity started.");
 
         //-----通知機能の追加---------------------//
@@ -128,25 +118,46 @@ public class MainActivity extends AppCompatActivity {
 //-----------------------------------------------------------------------------
 
 
-    public void startAlarm(int id,int hour,int minute){
+    public void startAlarm(int id,Calendar calendar){
         Intent intent = new Intent(getApplicationContext(), AlarmReceiver.class);
         intent.putExtra("id",id);
         PendingIntent alarmIntent = PendingIntent.getBroadcast(getApplicationContext(), id, intent, PendingIntent.FLAG_IMMUTABLE);
-
-// Set the alarm to start at 8:30 a.m.
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(System.currentTimeMillis());
-        int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
-        calendar.set(Calendar.HOUR_OF_DAY, hour);
-        calendar.set(Calendar.MINUTE, minute);
-
 // setRepeating() lets you specify a precise custom interval--in this case,
-        int interval = 1000;
         alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
                 1000*60, alarmIntent);
-
-
+        Log.i("test","Set id="+id+" "+calendar.getTime());
     }
+
+    public void setAlarm(DataBaseOperator operator){
+        alarmMgr = (AlarmManager)getApplicationContext().getSystemService(Context.ALARM_SERVICE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+            alarmMgr.cancelAll();
+        }
+
+        for(int i = 1;i <= 25;i++){
+            String[] data = operator.getDataById(i);
+            int notification = Integer.parseInt(data[2]);
+//            通知ONだったら
+            if(notification == 0){
+                int targetWeek = i%5==0 ? 6 : i%5+1;
+                int targetTime = (i-1)/5;
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTimeInMillis(System.currentTimeMillis());
+                for(int j = 1;j <= 7;j++){
+                    if(calendar.get(Calendar.DAY_OF_WEEK) == targetWeek){
+                        calendar.set(Calendar.HOUR_OF_DAY, TIME_FOR_NOTIFICATION[targetTime][0]);
+                        calendar.set(Calendar.MINUTE, TIME_FOR_NOTIFICATION[targetTime][1]);
+                        calendar.set(Calendar.SECOND,0);
+                        startAlarm(i,calendar);
+                        break;
+                    } else {
+                        calendar.add(Calendar.DATE,1);
+                    }
+                }
+            }
+        }
+    }
+
 
 
 }
