@@ -33,7 +33,7 @@ public class SubActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-//-------------追加------------------------------------------------------------------------------------------------------------------
+/////////////////////////////データベース(三上)/////////////////////////////////////////////////////////////////
         //初期設定(画面を開いたときに、データベースからデータを読み出してEditTextとSwitchにデータを反映する処理)
         EditText etLecture = findViewById(R.id.et_lecture);
         EditText etPlace = findViewById(R.id.et_place);
@@ -80,9 +80,10 @@ public class SubActivity extends AppCompatActivity {
             }
         });
 
-//-------------------------------------------------------------------------------------------------------------------------
+//////////////////////////////////////////////////////////////////////////////////////////////////////
     }
 
+//---------------------------------ライフサイクル(宮崎)---------------------------------------------//
     @Override
     public void onStart(){
         Log.i("Zikanwari App","Sub onStart() called.");
@@ -120,10 +121,7 @@ public class SubActivity extends AppCompatActivity {
 
 
     }
-
-    public void onButtonClick(View view) {
-        finish();
-    }
+//--------------------------------------------------------------------------------------------//
 
 
 }
