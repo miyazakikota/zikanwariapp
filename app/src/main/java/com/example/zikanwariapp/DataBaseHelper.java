@@ -1,7 +1,7 @@
 package com.example.zikanwariapp;
 
 //import static androidx.appcompat.graphics.drawable.DrawableContainerCompat.Api21Impl.getResources;
-
+//製作者：三上
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;

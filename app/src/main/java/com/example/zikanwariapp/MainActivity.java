@@ -41,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
     private final int[][] TIME_FOR_NOTIFICATION = {{8,45},{10,25},{12,55},{14,35},{16,15}};
     //////////////////////////////////////////////////////////
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.i("Zikanwari App","Main onCreate() called.");
@@ -57,9 +58,10 @@ public class MainActivity extends AppCompatActivity {
         LinearLayout llJugyo = findViewById(R.id.ll_jugyo);
         DataBaseOperator operator = new DataBaseOperator(MainActivity.this);
         operator.setAllButton(MainActivity.this,new OnButtonClick(),llJugyo);
+//        ((LinearLayout)llJugyo.getChildAt(2)).removeViewAt(0);
 
 
-           //通知の設定
+        //通知の設定
         setAlarm(operator);
         Log.i("test","mainactivity started.");
         /////////////////////////////////////////////////////////
@@ -78,7 +80,39 @@ public class MainActivity extends AppCompatActivity {
             notificationManager.createNotificationChannel(channel);
         }
 
+
         //------------------------------------------------------------------//
+
+//        ボタンに機能をセット
+        Button reset = findViewById(R.id.bt_reset);
+        reset.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DataBaseOperator btOperator = new DataBaseOperator(MainActivity.this);
+                for (int i = 1; i <= 25; i++) {
+                    btOperator.saveData(i, "", "", 1);
+                }
+                operator.setAllButton(MainActivity.this,new OnButtonClick(),llJugyo);
+            }
+
+
+
+        });
+
+        Button all_off = findViewById(R.id.bt_notify_off);
+        all_off.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DataBaseOperator btOperator = new DataBaseOperator(MainActivity.this);
+                for (int i = 1; i <= 25; i++) {
+                    String[] data = btOperator.getDataById(i);
+                    operator.saveData(i, data[0], data[1], 1);
+                }
+                operator.setAllButton(MainActivity.this,new OnButtonClick(),llJugyo);
+
+            }
+        });
+
     }
     //------------------------ライフサイクル(宮崎)----------------------------//
     @Override
@@ -89,6 +123,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onRestart(){
         Log.i("Zikanwari App","Main onRestart() called.");
+
+
         super.onRestart();
     }
     @Override

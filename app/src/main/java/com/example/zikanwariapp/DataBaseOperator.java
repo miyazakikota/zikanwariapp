@@ -16,7 +16,8 @@ import android.widget.LinearLayout;
 ///////////////////////データベース(三上)//////////////////////////////////////////////
 
 
-//このクラスでは、アプリ固有のデータベース利用処理を扱う--------------
+//このクラスでは、アプリ固有のデータベース利用処理を扱う
+//製作者：三上
 
 public class DataBaseOperator {
     private Context context;
@@ -78,11 +79,25 @@ public class DataBaseOperator {
     }
 
     public void setAllButton(Context activity, MainActivity.OnButtonClick listener, LinearLayout llJugyo) {
+        //        もしもすでにLinearLayoutにボタンが設置されていたら一度ボタンを全て削除する
+        for(int i = 2;i < 7;i++){
+            LinearLayout child = (LinearLayout) llJugyo.getChildAt(i);
+            if(child.getChildCount() >= 2){
+                for(int j = 1;j < 6;j++){
+                    child.removeViewAt(1);
+                }
+            }
+        }
+
+        if(llJugyo.getChildCount() >= 2){
+
+        }
         //データの取得
         DataBaseHelper helper = new DataBaseHelper(context);
         SQLiteDatabase db = helper.getReadableDatabase();
         String sql = "SELECT * FROM lectures";
         Cursor cursor = db.rawQuery(sql, null);
+
 
         //ボタンを作成、LinearLayoutにセットする
         int idIdx = cursor.getColumnIndex("_id");
@@ -104,7 +119,9 @@ public class DataBaseOperator {
             Button bt = new Button(activity);
             bt.setTag(Integer.toString(id));
             bt.setText(showText);
-            bt.setBackground(context.getDrawable(R.drawable.my_button));
+//            通知がONだったら
+            if(notification == 1) bt.setBackground(context.getDrawable(R.drawable.my_button));
+            else bt.setBackground(context.getDrawable(R.drawable.my_button_notfy_on));
             bt.setOnClickListener(listener);
             Log.d("check_showText",showText);
             float scale = activity.getResources().getDisplayMetrics().density;
@@ -115,7 +132,7 @@ public class DataBaseOperator {
             bt.setLayoutParams(btParams);
 
             //llJugyoの1+(i+5)/5番目のLinearLayoutにボタンを追加
-            ((LinearLayout)llJugyo.getChildAt((n+5)/5)).addView(bt);
+            ((LinearLayout)llJugyo.getChildAt(1+(n+5)/5)).addView(bt);
             n++;
         }
         cursor.close();
