@@ -38,7 +38,7 @@ import java.util.Calendar;
 public class MainActivity extends AppCompatActivity {
     /////////AlarmManager(三上)////////////////////////////////
     private AlarmManager alarmMgr;
-    private final int[][] TIME_FOR_NOTIFICATION = {{8,45},{10,25},{12,55},{14,35},{16,15}};
+    private final int[][] TIME_FOR_NOTIFICATION = {{8,35},{10,15},{12,45},{14,25},{16,5}};
     //////////////////////////////////////////////////////////
 
 
@@ -170,7 +170,7 @@ public class MainActivity extends AppCompatActivity {
         PendingIntent alarmIntent = PendingIntent.getBroadcast(getApplicationContext(), id, intent, PendingIntent.FLAG_IMMUTABLE);
 // setRepeating() lets you specify a precise custom interval--in this case,
         alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
-                1000*60, alarmIntent);
+                AlarmManager.INTERVAL_DAY*7, alarmIntent);
         Log.i("test","Set id="+id+" "+calendar.getTime());
     }
 
