@@ -13,6 +13,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
+///////////////////////データベース(三上)//////////////////////////////////////////////
+
 
 //このクラスでは、アプリ固有のデータベース利用処理を扱う--------------
 
@@ -142,3 +144,4 @@ public class DataBaseOperator {
 
 
 }
+//////////////////////////////////////////////////////////////////////////////////////
