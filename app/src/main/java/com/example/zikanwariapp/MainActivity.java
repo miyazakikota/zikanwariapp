@@ -163,7 +163,7 @@ public class MainActivity extends AppCompatActivity {
     ////////////--------------------------------------------------//////////////////////
 
 
-    ////////////////////////startAlarm(三上)////////////////////////////////////////////////
+    ////////////////////////startAlarm,setAlarm(三上)////////////////////////////////////////////////
     public void startAlarm(int id,Calendar calendar){
         Intent intent = new Intent(getApplicationContext(), AlarmReceiver.class);
         intent.putExtra("id",id);
@@ -189,13 +189,19 @@ public class MainActivity extends AppCompatActivity {
                 int targetTime = (i-1)/5;
                 Calendar calendar = Calendar.getInstance();
                 calendar.setTimeInMillis(System.currentTimeMillis());
-                for(int j = 1;j <= 7;j++){
+                for(int j = 1;j <= 8;j++){
+                    Calendar now = Calendar.getInstance();
+                    now.setTimeInMillis(System.currentTimeMillis());
                     if(calendar.get(Calendar.DAY_OF_WEEK) == targetWeek){
                         calendar.set(Calendar.HOUR_OF_DAY, TIME_FOR_NOTIFICATION[targetTime][0]);
                         calendar.set(Calendar.MINUTE, TIME_FOR_NOTIFICATION[targetTime][1]);
                         calendar.set(Calendar.SECOND,0);
-                        startAlarm(i,calendar);
-                        break;
+                        if(calendar.after(now)) {
+                            startAlarm(i, calendar);
+                            break;
+                        } else {
+                            calendar.add(Calendar.DATE,1);
+                        }
                     } else {
                         calendar.add(Calendar.DATE,1);
                     }
