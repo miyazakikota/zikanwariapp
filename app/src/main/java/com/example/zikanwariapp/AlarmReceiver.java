@@ -1,5 +1,7 @@
 package com.example.zikanwariapp;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -49,6 +51,13 @@ public class AlarmReceiver extends BroadcastReceiver {
             return;
         }
         Log.i("test","receiver "+String.valueOf(id)+" move");
+        //        アラームの再設定
+        AlarmManager alarmMgr = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
+        Intent i = new Intent(context, AlarmReceiver.class);
+        i.putExtra("id",id);
+        PendingIntent alarmIntent = PendingIntent.getBroadcast(context, id, i, PendingIntent.FLAG_IMMUTABLE);
+        alarmMgr.setExact(AlarmManager.RTC_WAKEUP,System.currentTimeMillis()+AlarmManager.INTERVAL_DAY*7,alarmIntent);
+        Log.i("test","System.currentTimeMillis() is "+System.currentTimeMillis());
 
         notifyTest(context,intent);
 

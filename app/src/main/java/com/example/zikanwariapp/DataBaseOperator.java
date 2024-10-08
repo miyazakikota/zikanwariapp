@@ -65,6 +65,7 @@ public class DataBaseOperator {
 
 
     public void saveData(int id,String name,String room,int notification){
+
         DataBaseHelper helper = new DataBaseHelper(this.context);
         SQLiteDatabase db = helper.getWritableDatabase();
         String[] args = {String.valueOf(id)};
@@ -119,7 +120,7 @@ public class DataBaseOperator {
             Button bt = new Button(activity);
             bt.setTag(Integer.toString(id));
             bt.setText(showText);
-//            通知がONだったら
+//            通知がOFFだったら1,OFFなら0
             if(notification == 1) bt.setBackground(context.getDrawable(R.drawable.my_button));
             else bt.setBackground(context.getDrawable(R.drawable.my_button_notfy_on));
             bt.setOnClickListener(listener);

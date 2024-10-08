@@ -1,5 +1,7 @@
 package com.example.zikanwariapp;
 
+import static android.provider.Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM;
+
 import android.app.AlarmManager;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -38,7 +40,7 @@ import java.util.Calendar;
 public class MainActivity extends AppCompatActivity {
     /////////AlarmManager(三上)////////////////////////////////
     private AlarmManager alarmMgr;
-    private final int[][] TIME_FOR_NOTIFICATION = {{8,35},{10,15},{12,45},{14,25},{16,5}};
+    private final int[][] TIME_FOR_NOTIFICATION = {{8,45},{10,25},{12,55},{14,35},{16,15}};
     //////////////////////////////////////////////////////////
 
 
@@ -164,22 +166,41 @@ public class MainActivity extends AppCompatActivity {
 
 
     ////////////////////////startAlarm,setAlarm(三上)////////////////////////////////////////////////
-    public void startAlarm(int id,Calendar calendar){
+    public void startAlarm(int id,Calendar calendar) {
         Intent intent = new Intent(getApplicationContext(), AlarmReceiver.class);
-        intent.putExtra("id",id);
+        intent.putExtra("id", id);
         PendingIntent alarmIntent = PendingIntent.getBroadcast(getApplicationContext(), id, intent, PendingIntent.FLAG_IMMUTABLE);
 // setRepeating() lets you specify a precise custom interval--in this case,
-        alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
-                AlarmManager.INTERVAL_DAY*7, alarmIntent);
-        Log.i("test","Set id="+id+" "+calendar.getTime());
+//        alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
+//                AlarmManager.INTERVAL_DAY*7, alarmIntent);
+
+
+        if (alarmMgr.canScheduleExactAlarms()) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                alarmMgr.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), alarmIntent);
+            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                alarmMgr.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), alarmIntent);
+            } else {
+                alarmMgr.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), alarmIntent);
+
+            }
+            Log.i("test", "Set id=" + id + " " + calendar.getTime());
+        } else {
+            Intent request = new Intent(ACTION_REQUEST_SCHEDULE_EXACT_ALARM);
+            startActivity(request);
+
+        }
     }
+
 
     public void setAlarm(DataBaseOperator operator){
         alarmMgr = (AlarmManager)getApplicationContext().getSystemService(Context.ALARM_SERVICE);
+//        アラームを全てキャンセル
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
             alarmMgr.cancelAll();
         }
 
+//        あらためてアラームを設定
         for(int i = 1;i <= 25;i++){
             String[] data = operator.getDataById(i);
             int notification = Integer.parseInt(data[2]);
