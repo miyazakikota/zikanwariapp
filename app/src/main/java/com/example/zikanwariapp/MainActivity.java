@@ -75,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
 
             // 通知チャネルの作成
             NotificationChannel channel
-                    = new NotificationChannel("CHANNEL_ID", "サンプルアプリ", importance);
+                    = new NotificationChannel("CHANNEL_ID", "授業リマインダー", importance);
 
             //通知の目的
             channel.setDescription("授業のリマインダー通知です。授業開始前に出欠確認を忘れないようにお知らせします。");
