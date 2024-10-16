@@ -26,10 +26,13 @@ public class AlarmReceiver extends BroadcastReceiver {
         String[] data = operator.getDataById(id);
         NotificationCompat.Builder builder
                 = new NotificationCompat.Builder(context, "CHANNEL_ID")
+                //通知のアイコンを設定
                 .setSmallIcon(android.R.drawable.ic_menu_info_details)
+                //通知のタイトル
                 .setContentTitle(data[0]+"の出席時間です")
+                //通知の詳細テキスト
                 .setContentText("出欠登録が必要な場合は忘れないでください！")
-                //ヘッドアップ通知
+                //通知の優先度(ヘッドアップ通知)
                 .setPriority(NotificationCompat.PRIORITY_MAX);
 
 

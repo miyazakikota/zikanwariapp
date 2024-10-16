@@ -69,14 +69,16 @@ public class MainActivity extends AppCompatActivity {
         /////////////////////////////////////////////////////////
 
         //-----通知機能の追加(宮崎)-------------------------------------------------//
+        //
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             int importance = NotificationManager.IMPORTANCE_DEFAULT;
 
+            // 通知チャネルの作成
             NotificationChannel channel
                     = new NotificationChannel("CHANNEL_ID", "サンプルアプリ", importance);
 
-
-            channel.setDescription("説明・説明 ここに通知の説明を書くことができます");
+            //通知の目的
+            channel.setDescription("授業のリマインダー通知です。授業開始前に出欠確認を忘れないようにお知らせします。");
 
             NotificationManager notificationManager = getSystemService(NotificationManager.class);
             notificationManager.createNotificationChannel(channel);
