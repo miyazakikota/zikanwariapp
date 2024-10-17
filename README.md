@@ -10,7 +10,7 @@
 ## 使用技術
 - Java
 - Android SDK
-- NotificationCompat
+- Notification
 - AlarmManager
 - SQLiteDatabase
 
