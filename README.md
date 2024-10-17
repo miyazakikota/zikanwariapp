@@ -13,6 +13,7 @@
 - Notification
 - AlarmManager
 - SQLiteDatabase
+- XML
 
 ## 役割分担
 宮崎
