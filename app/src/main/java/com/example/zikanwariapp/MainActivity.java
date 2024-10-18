@@ -97,6 +97,7 @@ public class MainActivity extends AppCompatActivity {
                     btOperator.saveData(i, "", "", 1);
                 }
                 operator.setAllButton(MainActivity.this,new OnButtonClick(),llJugyo);
+                setAlarm(operator);
             }
 
 
@@ -113,7 +114,7 @@ public class MainActivity extends AppCompatActivity {
                     operator.saveData(i, data[0], data[1], 1);
                 }
                 operator.setAllButton(MainActivity.this,new OnButtonClick(),llJugyo);
-
+                setAlarm(operator);
             }
         });
 
@@ -167,14 +168,11 @@ public class MainActivity extends AppCompatActivity {
     ////////////--------------------------------------------------//////////////////////
 
 
-    ////////////////////////startAlarm,setAlarm(三上)////////////////////////////////////////////////
+    ////////////////////////startAlarm,setAlarm,deleteAlarm(三上)////////////////////////////////////////////////
     public void startAlarm(int id,Calendar calendar) {
         Intent intent = new Intent(getApplicationContext(), AlarmReceiver.class);
         intent.putExtra("id", id);
         PendingIntent alarmIntent = PendingIntent.getBroadcast(getApplicationContext(), id, intent, PendingIntent.FLAG_IMMUTABLE);
-// setRepeating() lets you specify a precise custom interval--in this case,
-//        alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
-//                AlarmManager.INTERVAL_DAY*7, alarmIntent);
 
 
         if (alarmMgr.canScheduleExactAlarms()) {
@@ -230,7 +228,20 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
             }
+//            通知OFFだったら
+            else {
+                deleteAlarm(i);
+                Log.i("test","delete id="+i+" alarm");
+            }
         }
+    }
+
+    public void deleteAlarm(int id){
+        Intent intent = new Intent(getApplicationContext(), AlarmReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), id, intent, PendingIntent.FLAG_IMMUTABLE);
+
+        pendingIntent.cancel();
+        alarmMgr.cancel(pendingIntent);
     }
     ////////////////////////////////////////////////////////////////////////////////////
 
